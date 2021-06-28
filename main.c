@@ -19,7 +19,7 @@ lv_obj_t *s2_img1;
 lv_anim_t a;//动画的变量
 static int fd; // 是mplayer的通信文件/home/china/1.fifo的文件描述符
 pthread_t tid,ptid,pptid,ppptid;
-int now = 1;
+int now = 1,window=1;
 void file_open(){
     fd = open("/home/china/1.fifo", O_RDWR);
     if (fd == -1)
@@ -219,7 +219,6 @@ void layout(){
     lv_obj_set_size(s3_btn1,200,120);
     lv_obj_align(s3_btn1,lv_scr_act(),LV_ALIGN_CENTER,0,0);
     lv_obj_set_event_cb(s3_btn1,record);
-
 }
 void* myrecv(){
     int n = 0;
@@ -265,6 +264,20 @@ void* myrecv(){
             system("killall -9 mplayer");
         }else if(atoi(recvbuf)==6){
             printf("继续播放\n");
+            pthread_create(&tid, NULL, play, NULL);
+        }else if(atoi(recvbuf)==7){
+            //换窗口用
+            printf("切换窗口\n");
+            if(window == 1){
+                //切换到第三个
+                lv_scr_load_anim(scr3,LV_SCR_LOAD_ANIM_MOVE_LEFT,600,0,false);
+                window = 2;
+            }else{
+                lv_scr_load_anim(scr,LV_SCR_LOAD_ANIM_MOVE_LEFT,600,0,false);
+                window = 1;
+            }
+        }else if(atoi(recvbuf)==8){
+            printf("开始播放\n");
             pthread_create(&tid, NULL, play, NULL);
         }
         memset(recvbuf,0,1024);

@@ -71,6 +71,14 @@ func write(conn2 net.Conn){
 			fmt.Println("回传播放")
 			_,_ = conn2.Write([]byte("6"))
 			srv.Code = -1
+		}else if srv.Code == 7{
+			fmt.Println("回传换窗口")
+			_,_ = conn2.Write([]byte("7"))
+			srv.Code = -1
+		}else if srv.Code == 8{
+			fmt.Println("回传开始播放")
+			_,_ = conn2.Write([]byte("8"))
+			srv.Code = -1
 		}
 
 	}

@@ -1,21 +1,23 @@
 package server
 
 import (
-    "net/url"
+	"context"
+	"crypto/hmac"
+	"crypto/sha256"
+	"encoding/base64"
+	"encoding/json"
 	"fmt"
-    "time"
-    "strings"
-    "encoding/base64"
-    "crypto/hmac"
-    "crypto/sha256"
-    "io/ioutil"
-    "github.com/gorilla/websocket"
-    "os"
-    "io"
-    "net/http"
-    "encoding/json"
-    "context"
+	"io"
+	"io/ioutil"
+	"net/http"
+	"net/url"
+	"os"
+	"strings"
+	"time"
+
+	"github.com/gorilla/websocket"
 )
+
 /**
  * 语音听写流式 WebAPI 接口调用示例 接口文档（必看）：https://doc.xfyun.cn/rest_api/语音听写（流式版）.html
  * webapi 听写服务参考帖子（必看）：http://bbs.xfyun.cn/forum.php?mod=viewthread&tid=38947&extra=
@@ -170,6 +172,10 @@ func Listen() {
             Code = 5
         }else if strings.Contains(resp.Data.Result.String(),"继续"){
             Code = 6
+        }else if strings.Contains(resp.Data.Result.String(),"换窗口"){
+            Code = 7
+        }else if strings.Contains(resp.Data.Result.String(),"播放"){
+            Code = 8
         }
         if resp.Code!=0{
             fmt.Println(resp.Code,resp.Message,time.Since(st))

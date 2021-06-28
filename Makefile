@@ -34,7 +34,7 @@ OBJS = $(AOBJS) $(COBJS)
 # default: $(AOBJS) $(COBJS) $(MAINOBJ)
 # 	$(CC) -shared -fPIC -o lib$(BIN).so $(MAINOBJ) $(AOBJS) $(COBJS) $(LDFLAGS) -lpthread -lfreetype
 bin: $(AOBJS) $(COBJS) $(MAINOBJ)
-	$(CC) -o $(BIN) $(MAINOBJ) update_client.c led.c $(AOBJS) $(COBJS) $(LDFLAGS) -lpthread -lfreetype
+	$(CC) -o $(BIN) $(MAINOBJ) update_client.c led.c $(AOBJS) $(COBJS) $(LDFLAGS) -L/go/like/lib -lpthread -lfreetype
 lib: $(AOBJS) $(COBJS) $(MAINOBJ)
 	$(CC) -shared -fPIC -o lib$(BIN).so update_client.c led.c $(MAINOBJ) $(AOBJS) $(COBJS) $(LDFLAGS) -lpthread -lfreetype
 clean: 
