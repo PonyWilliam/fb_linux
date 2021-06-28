@@ -2,9 +2,9 @@
 ## lvgl 版本号
 v7.10
 ## 项目架构图
-![架构图](images/tree.png)
+<div align=center>![架构图](images/tree.png)</div>
 ##  效果展示
-![效果展示](images/index.png)
+<div align=center>![效果展示](images/index.png)</div>
 ## 为什么要写这个？
 1. 自带的lvgl库许多驱动不完善
 2. 写入了font字体库（暂时无法使用，后续会修复）
