@@ -1,0 +1,14 @@
+prefix=/go/freetype-2.10.0/INSTALL
+exec_prefix=/go/freetype-2.10.0/INSTALL
+libdir=/go/freetype-2.10.0/INSTALL/lib
+includedir=/go/freetype-2.10.0/INSTALL/include
+
+Name: FreeType 2
+URL: https://freetype.org
+Description: A free, high-quality, and portable font engine.
+Version: 23.0.17
+Requires:
+Requires.private: 
+Libs: -L${libdir} -lfreetype
+Libs.private: 
+Cflags: -I${includedir}/freetype2

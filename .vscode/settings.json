@@ -1,0 +1,23 @@
+{
+    "files.associations": {
+        "*.vue": "html",
+        "*.html": "html",
+        "*.cjson": "jsonc",
+        "*.wxss": "css",
+        "*.wxs": "javascript",
+        "fbdev.h": "c",
+        "lv_examples.h": "c",
+        "evdev.h": "c",
+        "type_traits": "c",
+        "stdlib.h": "c",
+        "unistd.h": "c",
+        "lvgl.h": "c",
+        "pthread.h": "c",
+        "lv_freetype.h": "c",
+        "time.h": "c",
+        "lv_fs_if.h": "c",
+        "stdio.h": "c",
+        "socket.h": "c"
+    },
+    "C_Cpp.errorSquiggles": "Enabled"
+}
