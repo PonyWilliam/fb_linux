@@ -7,6 +7,7 @@ v7.10
 1. 自带的lvgl库许多驱动不完善
 2. 写入了font字体库（暂时无法使用，后续会修复）
 3. 网上的lvgl库实在是太杂了。。没几个能用的。而官方的demo压根就没有做整合。而且lvgl更新过快，所以可能出现许许多多奇怪的问题。推荐大家暂时先不要使用8.0，8.0的驱动底层有许多更改，对嵌入Linux不是很友好。
+4. 嵌入式学习了这个，就顺便写了一个，以后有机会会继续拿出来用和学习，也是第一次用C语言写这么大的项目，还是不喜欢C
 ## 说明
 1. 这个lvgl是屏幕驱动适用于800x480的屏幕，触摸屏幕驱动中使用了偏移量进行校准。如果与您的型号不匹配可以自行去en_dev修改。
 2. 对于Linux的socket通信已封装到socket.c中
@@ -87,6 +88,106 @@ typedef int16_t lv_coord_t;
                                 #else
                                         evdev_root_y = in.value * 480 / 600;
                                 #endif
+```
+### go内的socket
+注意就是修改IP地址，srv.Code是需要实时监听的，监听到变化后作出相应更改，有能力的可以做一个观察者模型。因能力有限，在此采用最蠢的轮回问候法。
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+	"net"
+	"os"
+	srv "server/srv"
+	"strings"
+	//"strings"
+	//"time"
+)
+func init(){
+	srv.Code = -1
+}
+func process(conn2 net.Conn){
+	defer conn2.Close()
+	var f *os.File
+	flag := 1
+	for{
+		if flag == 1{
+			_ = os.Remove("1.pcm")
+			_, _ = os.Create("1.pcm")
+			f,_ = os.OpenFile("1.pcm",os.O_RDWR|os.O_CREATE|os.O_APPEND,0644)
+			flag = 0
+		}
+		buf := make([]byte, 1024)
+		n,_ := conn2.Read(buf)
+		if n!= 0{
+			if strings.Contains(string(buf),"myend666"){
+				srv.Listen()
+				fmt.Println("已更新")
+				//读取所有的内容
+				flag = 1
+				continue//重新去读取
+			}
+			_, _ = f.Write(buf[:n])
+		}
+
+	}
+}
+func write(conn2 net.Conn){
+	defer conn2.Close()
+	fmt.Printf("准备给:%v发送消息\n",conn2.RemoteAddr())
+	for{
+		if srv.Code == 0 {
+			fmt.Println("回传播放上一首")
+			_,_ = conn2.Write([]byte("0"))
+			srv.Code = -1
+		}else if srv.Code == 1 {
+			fmt.Println("回传播放下一首")
+			_,_ = conn2.Write([]byte("1"))
+			srv.Code = -1
+		}else if srv.Code == 2 {
+			fmt.Println("回传关灯")
+			_,_ = conn2.Write([]byte("2"))
+			srv.Code = -1
+		}else if srv.Code == 3{
+			fmt.Println("回传开灯")
+			_,_ = conn2.Write([]byte("3"))
+			srv.Code = -1
+		}else if srv.Code == 4{
+			fmt.Println("回传重启")
+			_,_ = conn2.Write([]byte("4"))
+			srv.Code = -1
+		}else if srv.Code == 5{
+			fmt.Println("回传暂停")
+			_,_ = conn2.Write([]byte("5"))
+			srv.Code = -1
+		}else if srv.Code == 6{
+			fmt.Println("回传播放")
+			_,_ = conn2.Write([]byte("6"))
+			srv.Code = -1
+		}
+
+	}
+
+}
+func main(){
+	fmt.Println("服务器来了")
+	listen,err := net.Listen("tcp","192.168.0.1:6666")
+	if err != nil{
+		log.Fatal(err)
+	}
+	defer listen.Close()
+	for{
+		//循环等待
+		conn2,err := listen.Accept()
+		if err != nil{
+			log.Fatal(err)
+		}
+		fmt.Println("客户端Ip",conn2.RemoteAddr())
+		go write(conn2)
+		process(conn2)
+	}
+}
 ```
 ## issue
 欢迎大家提出issue，本次更新后续不再维护更新。但是有issue会积极解答。
