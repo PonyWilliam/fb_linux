@@ -4,7 +4,7 @@ v7.10
 ## 项目架构图
 ![架构图](images/tree.png)
 ##  效果展示
-<div align=center> ![效果展示](images/index.png) </center>
+<div align=center> ![效果展示](images/index.png)
 
 ## 为什么要写这个？
 1. 自带的lvgl库许多驱动不完善
